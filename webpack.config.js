@@ -19,7 +19,7 @@ const common = {
   },
   output: {
     path: PATHS.build,
-    filename: 'build.js',
+    filename: '[name].js',
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -32,6 +32,7 @@ const common = {
       {
         test: /.*\.jsx?$/,
         include: PATHS.app,
+        exclude: /(node_modules|bower_components)/,
         loader: 'babel',
       },
       {
@@ -62,8 +63,14 @@ const buildConfig = (previousConfig) => {
 const devConfig = (previousConfig) => {
   return Object.assign({}, previousConfig, {
     entry: {
-      app: [`${PATHS.app}/app.jsx`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'],
-      style: [`${PATHS.style}/main.scss`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'],
+      app: [
+      `${PATHS.app}/app.jsx`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
+      `${PATHS.style}/main.scss`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'
+      ],
+    },
+    output: {
+      path: PATHS.build,
+      filename: '[name].[hash].js',
     },
     devtool: 'source-map',
     plugins: [
