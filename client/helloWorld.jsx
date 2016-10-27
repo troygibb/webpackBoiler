@@ -7,7 +7,7 @@ class HelloWorld extends React.Component {
 	}
   render() {
   	const { message } = this.props; 
-    return <h1>	{ message }!</h1>;
+    return <h1 className="hello-world">	{ message }!</h1>;
   }
 }
 
