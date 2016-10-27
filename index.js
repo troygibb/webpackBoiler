@@ -9,7 +9,7 @@ const app = express();
 
 const TARGET = process.env.npm_lifecycle_event;
 
-if (TARGET === 'production') {
+if (TARGET !== 'production') {
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
     hot: true,

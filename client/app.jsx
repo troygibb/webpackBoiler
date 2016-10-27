@@ -1,14 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-import Controller from './controller';
+import reducer from './reducers/index';
+import HelloWorld from './helloWorld';
+
+const finalStore = applyMiddleware(thunk)(createStore);
+const store = finalStore(reducer);
 
 class App extends React.Component {
   render() {
     return (
       <div>
-        <h1> HELLO world  ! </h1>
-        <Controller />
+        <Provider store={store}>
+          <HelloWorld />
+        </Provider>
       </div>
     );
   }
