@@ -6,22 +6,27 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
 const app = express();
-const compiler = webpack(webpackConfig);
 
-app.use(webpackDevMiddleware(compiler, {
-  hot: true,
-  filename: 'build.js',
-  stats: {
-    colors: true,
-  },
-  historyApiFallback: true,
-}));
+const TARGET = process.env.npm_lifecycle_event;
 
-app.use(webpackHotMiddleware(compiler, {
-  log: console.log,
-  path: '/__webpack_hmr',
-  heartbeat: 10 * 1000,
-}));
+if (TARGET === 'production') {
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler, {
+    hot: true,
+    filename: 'build.js',
+    stats: {
+      colors: true,
+    },
+    historyApiFallback: true,
+    noInfo: true,
+  }));
+
+  app.use(webpackHotMiddleware(compiler, {
+    log: console.log,
+    path: '/__webpack_hmr',
+    heartbeat: 10 * 1000,
+  }));
+}
 
 const port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'build')));

@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Controller from './controller';
+
 class App extends React.Component {
   render() {
     return (
-      <h1> HELLO troy! </h1>
+      <div>
+        <h1> HELLO world  ! </h1>
+        <Controller />
+      </div>
     );
   }
 }

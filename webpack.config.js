@@ -2,13 +2,18 @@ const path = require('path');
 const webpack = require('webpack');
 const validate = require('webpack-validator');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+process.env.PWD = process.cwd();
 
 const PATHS = {
-  app: path.join(__dirname, 'client'),
-  style: path.join(__dirname, 'client/styles'),
-  build: path.join(__dirname, 'build'),
-  vendor: path.join(__dirname, 'client'),
+  app: path.join(process.env.PWD, 'client'),
+  style: path.join(process.env.PWD, 'client/styles'),
+  build: path.join(process.env.PWD, 'build'),
+  vendor: path.join(process.env.PWD, 'client'),
 };
+
+process.env.PWD = process.cwd();
 
 const common = {
   target: 'web',
@@ -46,7 +51,7 @@ const common = {
       {
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass'],
-        include: PATHS.style
+        include: PATHS.style,
       },
     ],
   },
@@ -57,20 +62,32 @@ const common = {
 };
 
 const buildConfig = (previousConfig) => {
-  return Object.assign({}, previousConfig);
+  return Object.assign({}, previousConfig, {
+    plugins: [
+      ...previousConfig.plugins,
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false,
+        },
+      }),
+      new CleanWebpackPlugin([PATHS.build], {
+        root: process.env.PWD
+      }),
+    ],
+  });
 };
 
 const devConfig = (previousConfig) => {
   return Object.assign({}, previousConfig, {
     entry: {
       app: [
-      `${PATHS.app}/app.jsx`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-      `${PATHS.style}/main.scss`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'
+        `${PATHS.app}/app.jsx`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
+        `${PATHS.style}/main.scss`, 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
       ],
     },
     output: {
       path: PATHS.build,
-      filename: '[name].[hash].js',
+      filename: '[name].js',
     },
     devtool: 'source-map',
     plugins: [
