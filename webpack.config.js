@@ -11,9 +11,8 @@ const PATHS = {
   style: path.join(process.env.PWD, 'client/styles'),
   build: path.join(process.env.PWD, 'build'),
   vendor: path.join(process.env.PWD, 'client'),
+  images: path.join(process.env.PWD, 'client/styles/images'),
 };
-
-process.env.PWD = process.cwd();
 
 const common = {
   target: 'web',
@@ -37,7 +36,7 @@ const common = {
       {
         test: /.*\.jsx?$/,
         include: PATHS.app,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules)/,
         loader: 'babel',
       },
       {
@@ -52,6 +51,10 @@ const common = {
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass'],
         include: PATHS.style,
+      },
+      {
+        test: /\.png$/,
+        loader: 'url-loader?limit=8192',
       },
     ],
   },
@@ -70,8 +73,13 @@ const buildConfig = (previousConfig) => {
           warnings: false,
         },
       }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify('production'),
+        },
+      }),
       new CleanWebpackPlugin([PATHS.build], {
-        root: process.env.PWD
+        root: process.env.PWD,
       }),
     ],
   });
@@ -100,5 +108,5 @@ const devConfig = (previousConfig) => {
 };
 
 const TARGET = process.env.npm_lifecycle_event;
-const config = TARGET === 'build' ? buildConfig(common) : devConfig(common);
+const config = TARGET === 'build' || TARGET === 'postinstall' ? buildConfig(common) : devConfig(common);
 module.exports = validate(config);
