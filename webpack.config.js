@@ -36,7 +36,6 @@ const common = {
       {
         test: /.*\.jsx?$/,
         include: PATHS.app,
-        exclude: /(node_modules)/,
         loader: 'babel',
       },
       {
