@@ -52,7 +52,7 @@ const common = {
         include: PATHS.style,
       },
       {
-        test: /\.png$/,
+        test: /\.png$|\.jpg$/,
         loader: 'url-loader?limit=8192',
       },
     ],

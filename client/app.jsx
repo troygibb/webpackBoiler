@@ -5,24 +5,24 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import reducer from './reducers/index';
-import HelloWorld from './helloWorld';
+import App from './app/index';
 
 const finalStore = applyMiddleware(thunk)(createStore);
 const store = finalStore(reducer);
 
-class App extends React.Component {
+class Root extends React.Component {
   render() {
     return (
       <div>
         <Provider store={store}>
-          <HelloWorld />
+          <App />
         </Provider>
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('main'));
+ReactDOM.render(<Root />, document.getElementById('main'));
 
 // Enables HMR.
 if (module.hot) {
